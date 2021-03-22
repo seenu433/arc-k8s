@@ -163,7 +163,7 @@ spec:
   - name: nginx
     image: nginx
     securityContext:
-	  allowPrivilegeEscalation: false
+      allowPrivilegeEscalation: false
       privileged: true
 ```
 
