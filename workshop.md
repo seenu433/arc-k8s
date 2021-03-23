@@ -1,5 +1,13 @@
 # Azure Arc enabled Kubernetes Workshop
 
+## Agenda
+1. Create a k8s cluster using Kubeadm 
+1. Onboard the cluster to Arc for k8s
+1. Features walkthrough: Policies, GitOps, Monitoring
+1. Private preview extensions: Extensions: OSM, Monitoring, Defender
+1. Cluster Connect walkthrough
+
+
 ## Prerequisites
 
 1. Share your github handle to get access to [private preview documentation](https://github.com/Azure/azure-arc-kubernetes-preview)
