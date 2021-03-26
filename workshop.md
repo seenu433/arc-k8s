@@ -19,61 +19,61 @@
 Create Resource Group, Virtual network, Subnet and Virtual Machine
 
 ```azurecli
-    az group create --name k8s --location eastus
+az group create --name k8s --location eastus
     
-    ## Create a VNet and make a note of SUBNETID
-    az network vnet create --name k8snet --resource-group k8s --location  eastus --address-prefixes 172.10.0.0/16 --subnet-name k8s-subnet1 --subnet-prefixes 172.10.1.0/24
+## Create a VNet and make a note of SUBNETID
+az network vnet create --name k8snet --resource-group k8s --location  eastus --address-prefixes 172.10.0.0/16 --subnet-name k8s-subnet1 --subnet-prefixes 172.10.1.0/24
 
-    az vm create --name kube-master --resource-group k8s --location eastus --image UbuntuLTS --admin-user azureuser --generate-ssh-keys --size Standard_DS3_v2 --data-disk-sizes-gb 10 --public-ip-address-dns-name k8s-kube-master-lab --subnet <SUBNETID>
+az vm create --name kube-master --resource-group k8s --location eastus --image UbuntuLTS --admin-user azureuser --generate-ssh-keys --size Standard_DS3_v2 --data-disk-sizes-gb 10 --public-ip-address-dns-name k8s-kube-master-lab --subnet <SUBNETID>
 
-    ## Make a note the fqdns and the public IP address
+## Make a note the fqdns and the public IP address
 ```
 
 SSH into the VM and run the script to initailize a kubernetes cluster
 
 ```bash
-    ssh azureuser@<fqdns>
+ssh azureuser@<fqdns>
 
-    vi prepare-cluster-node.sh
+vi prepare-cluster-node.sh
 ```
 
 Copy and paste contents below in the vim editor
 
 ```bash
-    #!/bin/bash
-    
-    echo "Installing Docker..."
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    sudo apt-key fingerprint 0EBFCD88
-    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-    sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-    
-    echo "Configuring Docker..."
-    
-    sudo cat > /etc/docker/daemon.json <<EOF
-    {
-      "exec-opts": ["native.cgroupdriver=systemd"],
-      "log-driver": "json-file",
-      "log-opts": {
-        "max-size": "100m"
-      },
-      "storage-driver": "overlay2"
-    }
-    EOF
-    
-    sudo mkdir -p /etc/systemd/system/docker.service.d
-    sudo systemctl daemon-reload
-    sudo systemctl restart docker
-    
-    echo "Installing Kubernetes components..."
-    
-    sudo apt-get install -y apt-transport-https
-    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add 
-    cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
-    deb https://apt.kubernetes.io/ kubernetes-xenial main
-    EOF
-    sudo apt-get update && sudo apt-get install -y kubelet kubeadm kubectl
-    sudo apt-mark hold kubelet kubeadm kubectl
+#!/bin/bash
+
+echo "Installing Docker..."
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+echo "Configuring Docker..."
+
+sudo cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+
+sudo mkdir -p /etc/systemd/system/docker.service.d
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+echo "Installing Kubernetes components..."
+
+sudo apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add 
+cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+sudo apt-get update && sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
 Save the file __ESC :wq__
@@ -81,21 +81,21 @@ Save the file __ESC :wq__
 Execute the script
 
 ```bash
-    sudo bash ./prepare-cluster-node.sh
+sudo bash ./prepare-cluster-node.sh
 
-    sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-cert-extra-sans <fqdns>,<publicIPAddress>
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-cert-extra-sans <fqdns>,<publicIPAddress>
 
-    mkdir -p $HOME/.kube
-    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-    kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 
-    kubectl taint nodes --all node-role.kubernetes.io/master-
+kubectl taint nodes --all node-role.kubernetes.io/master-
 
-    cat $HOME/.kube/config
+cat $HOME/.kube/config
 
-    ## Copy the contents to be used next
+## Copy the contents to be used next
 ```
 
 Exit from the Shell
@@ -123,13 +123,13 @@ Run kubectl get nodes
 Install CLI extensions  and register the providers. We will use the [preview extensions](https://github.com/Azure/azure-arc-kubernetes-preview/blob/master/docs/k8s-extensions.md#prerequisites) to enable private preview features.
 
 ```azurecli
-    az group create --name arc -l EastUS -o table
+az group create --name arc -l EastUS -o table
 
-    az connectedk8s connect --name arc-k8s --resource-group arc
+az connectedk8s connect --name arc-k8s --resource-group arc
 
-    ## Watch for the rollout of agents
+## Watch for the rollout of agents
 
-    kubectl get po -A -w
+kubectl get po -A -w
 ```
 
 Review the [purpose](https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-agent-architecture) of each of the agents
