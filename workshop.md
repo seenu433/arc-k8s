@@ -24,9 +24,9 @@ az group create --name k8s --location eastus
 ## Create a VNet and make a note of SUBNETID
 az network vnet create --name k8snet --resource-group k8s --location  eastus --address-prefixes 172.10.0.0/16 --subnet-name k8s-subnet1 --subnet-prefixes 172.10.1.0/24
 
+## Create a VM and make a note the fqdns and the public IP address
 az vm create --name kube-master --resource-group k8s --location eastus --image UbuntuLTS --admin-user azureuser --generate-ssh-keys --size Standard_DS3_v2 --data-disk-sizes-gb 10 --public-ip-address-dns-name k8s-kube-master-lab --subnet <SUBNETID>
 
-## Make a note the fqdns and the public IP address
 ```
 
 SSH into the VM and run the script to initailize a kubernetes cluster
