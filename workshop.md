@@ -102,19 +102,17 @@ Exit from the Shell
 
 ### Access the cluster remotely
 
-Navigate to the kubeconfig file on the local machine at C:\Users\USERNAME\.kube
+* Navigate to the kubeconfig file on the local machine at C:\Users\<USERNAME>\.kube, take a backup of the file. Once the workshop is done, you can go back to this file
 
-Edit/Replace the config file
+* Open the kube config file, replace the entire content with the content copied from the kube config file in the VM
 
-Update the config file for the IP of the API Server to the public IP of the VM
+* kubectl get nodes (it will time out)
 
-Run kubectl get nodes
+* The cluster is private at this point the API server is not accessible from outside the vnet
 
-The cluster is private at this point the API server is not accessible from outside the vnet
+* Add a rule to the NSG (Inbound port rule) to allow TCP traffic on port 6443
 
-Add a rule to the NSG to allow TCP traffic on port 6443
-
-Run kubectl get nodes
+* kubectl get nodes (One kube-master node should be displayed)
 
 **Reference:** [Create Cluster with kubeadm](https://github.com/Azure/azure-arc-kubernetes-preview/blob/master/docs/create-cluster-with-kubeadm.md)
 
