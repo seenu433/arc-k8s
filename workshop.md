@@ -121,12 +121,13 @@ Exit from the Shell
 Install CLI extensions  and register the providers. We will use the [preview extensions](https://github.com/Azure/azure-arc-kubernetes-preview/blob/master/docs/k8s-extensions.md#prerequisites) to enable private preview features.
 
 ```azurecli
+## Create a resource group to hold the Arc enabled Kubernetes resource
 az group create --name arc -l EastUS -o table
 
+## Connect the Kubernetes cluster to Azure Arc
 az connectedk8s connect --name arc-k8s --resource-group arc
 
-## Watch for the rollout of agents
-
+## Open another Command Prompt window and watch for the rollout of agents
 kubectl get po -A -w
 ```
 
