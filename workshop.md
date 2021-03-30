@@ -18,26 +18,34 @@
 
 Create Resource Group, Virtual network, Subnet and Virtual Machine
 
+_Note: These commands can be executed in win command prompt_
+
 ```azurecli
+## Create a resource group
 az group create --name k8s --location eastus
     
 ## Create a VNet and make a note of SUBNETID
 az network vnet create --name k8snet --resource-group k8s --location  eastus --address-prefixes 172.10.0.0/16 --subnet-name k8s-subnet1 --subnet-prefixes 172.10.1.0/24
 
 ## Create a VM and make a note the fqdns and the public IP address
-az vm create --name kube-master --resource-group k8s --location eastus --image UbuntuLTS --admin-user azureuser --generate-ssh-keys --size Standard_DS3_v2 --data-disk-sizes-gb 10 --public-ip-address-dns-name k8s-kube-master-lab --subnet <SUBNETID>
+## Update the placeholders for ALIAS and SUBNETID
+az vm create --name kube-master --resource-group k8s --location eastus --image UbuntuLTS --admin-user azureuser --generate-ssh-keys --size Standard_DS3_v2 --data-disk-sizes-gb 10 --public-ip-address-dns-name k8s-kube-master-lab-<ALIAS> --subnet <SUBNETID>
 
 ```
 
 SSH into the VM and run the script to initailize a kubernetes cluster
 
 ```bash
+## Login to the VM. Use the fqdns or the Public IP address
 ssh azureuser@<fqdns>
 
+## Create a file on the VM
 vi prepare-cluster-node.sh
+
+## Press INSERT key to get into the insert mode
 ```
 
-Copy and paste contents below in the vim editor
+Copy (Select content below and mouse right click) and paste (mouse right click) contents below in the vim editor
 
 ```bash
 #!/bin/bash
@@ -76,21 +84,27 @@ sudo apt-get update && sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
-Save the file __ESC :wq__
+Save the file __ESC key and :wq__
 
 Execute the script
 
 ```bash
+## Run the script to prepare the node for k8s installation
 sudo bash ./prepare-cluster-node.sh
 
+## Initiate the kubernetes cluster. Update the placeholders for fqdns and public IP
+## Make a note of the Kube Join command from the output if we wish to add nodes later
 sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-cert-extra-sans <fqdns>,<publicIPAddress>
 
+## Copy the kubeconfig file to .kube folder for kubectl access on the VM
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
+## Install the network plugin
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 
+## remote the master taint as we are currently using a single node cluster
 kubectl taint nodes --all node-role.kubernetes.io/master-
 
 cat $HOME/.kube/config
@@ -106,11 +120,13 @@ Exit from the Shell
 
 * Open the kube config file, replace the entire content with the content copied from the kube config file in the VM
 
+* Update the kube config file for the IP (172.x.x.x) of the server to the public IP of the VM
+
 * kubectl get nodes (it will time out)
 
 * The cluster is private at this point the API server is not accessible from outside the vnet
 
-* Add a rule to the NSG (Inbound port rule) to allow TCP traffic on port 6443
+* Add a rule to the NSG (Inbound security rules) in the k8s resource group to allow TCP traffic on port 6443
 
 * kubectl get nodes (One kube-master node should be displayed)
 
