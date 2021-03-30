@@ -189,6 +189,10 @@ spec:
       allowPrivilegeEscalation: true
       privileged: true
 ```
+You will get error message as follows:
+
+"Error from server ([denied by azurepolicy-container-no-privilege-1842c1ecbe6bf4a645ac] Privileged container is not allowed: nginx, securityContext: {"privileged": true, "allowPrivilegeEscalation": true}): error when creating "***Privileged Pod.yaml": admission webhook "validation.gatekeeper.sh" denied the request: [denied by azurepolicy-container-no-privilege-1842c1ecbe6bf4a645ac] Privileged container is not allowed: nginx, securityContext: {"privileged": true, "allowPrivilegeEscalation": true}"
+
 
 ## Extensions
 
