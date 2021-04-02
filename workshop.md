@@ -219,7 +219,7 @@ Steps to deploy the [OSM Extension](https://github.com/Azure/azure-arc-kubernete
 
 ## Cluster Connect
 
-A Kubernetes Cluster onboarded to Arc will still not have direct access to the API server. Cluster feature helps in scenarios needing line of sight to the API Server.
+A Kubernetes Cluster onboarded to Arc will still not have direct access to the API server. Cluster Connect feature helps in scenarios needing line of sight to the API Server.
 
 - No Inbound connection required
 - Proxies the commands to the cluster
