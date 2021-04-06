@@ -134,7 +134,18 @@ Exit from the Shell
 
 ## Onboard the cluster to Arc
 
-Install CLI extensions  and register the providers. We will use the [preview extensions](https://github.com/Azure/azure-arc-kubernetes-preview/blob/master/docs/k8s-extensions.md#prerequisites) to enable private preview features.
+Install CLI extensions  and register the providers. 
+
+```azurecli
+## Add the azcli extensions
+az extension add --name connectedk8s
+az extension add --name k8s-extension
+
+## Register the providers
+az provider register --namespace Microsoft.Kubernetes
+az provider register --namespace Microsoft.KubernetesConfiguration
+az provider register --namespace Microsoft.ExtendedLocation
+```
 
 ```azurecli
 ## Create a resource group to hold the Arc enabled Kubernetes resource
@@ -196,21 +207,29 @@ You will get error message as follows:
 
 ## Extensions
 
-1. Install preview CLI extensions  and register the providers. (Should have been done earlier)
-2. Install the Extensions  (Should have been done earlier)
-3. View in Portal (https://aka.ms/azmon-containers-arc-extensions-preview)
-
-Th extensions blade is behind a hide-key and will be visible if the portal is opened using the link provided above.
+1. Install CLI extensions  and register the providers. (Should have been done earlier)
+2. Install the Arc Extension
+3. View in Extension Blade of the Arc resource in the Portal
 
 Below are the extensions:
 
 ### Monitor
-Steps to deploy the [Monitor Extension](https://github.com/Azure/azure-arc-kubernetes-preview/blob/master/docs/k8s-extensions-azure-monitor.md#create-azure-monitor-extension-instance)
+Steps to deploy the [Monitor Extension](https://docs.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-enable-arc-enabled-clusters?toc=/azure/azure-arc/kubernetes/toc.json)
 
-### [Optional] Defender
-Needs Master nodes to be designated separately. We need a multi node cluster with separate Master and Worker Nodes.
+1. Create a Log Analytics Workspace
+2. Deploy the Monitor extension 
 
-Steps to deploy the [Defender Extension](https://github.com/Azure/azure-arc-kubernetes-preview/blob/master/docs/k8s-extensions-azure-defender.md)
+```
+az k8s-extension create --name azuremonitor-containers --cluster-name arc-k8s --resource-group arc --cluster-type connectedClusters --extension-type Microsoft.AzureMonitor.Containers --configuration-settings logAnalyticsWorkspaceResourceID=<armResourceIdOfExistingWorkspace>
+```
+
+### Defender
+
+Steps to deploy the [Defender Extension](https://docs.microsoft.com/en-us/azure/security-center/defender-for-kubernetes-azure-arc?toc=%2Fazure%2Fazure-arc%2Fkubernetes%2Ftoc.json&tabs=k8s-deploy-asc%2Ck8s-verify-asc%2Ck8s-remove-arc)
+
+```
+az k8s-extension create --name microsoft.azuredefender.kubernetes --cluster-type connectedClusters --cluster-name arc-k8s --resource-group arc --extension-type microsoft.azuredefender.kubernetes --configuration-settings logAnalyticsWorkspaceResourceID=<armResourceIdOfExistingWorkspace>
+```
 
 [Alerts](https://docs.microsoft.com/en-us/azure/security-center/alerts-reference#alerts-containerhost) available from Defender
 
@@ -225,9 +244,34 @@ A Kubernetes Cluster onboarded to Arc will still not have direct access to the A
 - Proxies the commands to the cluster
 - Service Account Token / AAD Auth
 
-Note that the AAD option of Connect required you to have AD admin rights to grant access to the consent. You can onboard the cluster(in your AIRS) to your personal subscription with admin access.
+```
+## Create a service principal
+az ad sp create-for-rbac --name arc-k8s-user
+## Make a note of the appId, password and tenant
 
-[Steps](https://github.com/Azure/azure-arc-kubernetes-preview/blob/master/docs/cluster-connect.md) to onboard a cluster with Connect feature
+## Get the Object Id for the SP
+az ad sp show --id APP_ID --query objectId -o tsv
+
+## Create the cluster-admin role binding
+kubectl create clusterrolebinding admin-user-binding --clusterrole cluster-admin --user=<objectId>
+```
+
+Disable the inbound rule on the cluster NSG by changing the rule to DENY for port 6443
+
+```
+## Login using hte service principal
+az login --service-principal --username APP_ID --password PASSWORD --tenant TENANT_ID
+
+## Run the proxcy to initiate connectivity to the Arc resource
+az connectedk8s proxy -n arc-k8s -g arc
+
+## Open a new CMD window and run kubectl commands
+kubectl get po -A
+```
+
+Notice that we are able to execute kubectl commands without connectivity to the API server.
+
+[Steps](https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/cluster-connect) to onboard a cluster with Connect feature
 
 ## AKS GitOps
 
