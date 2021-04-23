@@ -104,7 +104,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ## Install the network plugin
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 
-## remote the master taint as we are currently using a single node cluster
+## remove the master taint as we are currently using a single node cluster
 kubectl taint nodes --all node-role.kubernetes.io/master-
 
 cat $HOME/.kube/config
