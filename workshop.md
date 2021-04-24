@@ -120,13 +120,16 @@ Exit from the Shell
 
 * Open the kube config file, replace the entire content with the content copied from the kube config file in the VM
 
-* Update the kube config file for the IP (172.x.x.x) of the server to the public IP of the VM
+* Update the kube config file, and replace the IP (172.x.x.x) with the public IP of the VM
 
 * kubectl get nodes (it will time out)
 
 * The cluster is private at this point the API server is not accessible from outside the vnet
 
-* Add a rule to the NSG (Inbound security rules) in the k8s resource group to allow TCP traffic on port 6443
+* Add a rule to the NSG (Inbound security rules) to the kube-master VM to allow TCP traffic on port 6443
+  * Destination port ranges: 6443
+  * Protocol: TCP
+  * Name: Port_6443
 
 * kubectl get nodes (One kube-master node should be displayed)
 
