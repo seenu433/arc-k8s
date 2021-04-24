@@ -116,7 +116,7 @@ Exit from the Shell
 
 ### Access the cluster remotely
 
-* Navigate to the kubeconfig file on the local machine at C:\Users\<USERNAME> \ .kube \, take a backup of the file. Once the workshop is done, you can go back to this file
+* Navigate to the kubeconfig file on the local machine at C:\Users\\[USERNAME]\\.kube\\ take a backup of the file. Once the workshop is done, you can go back to this file
 
 * Open the kube config file, replace the entire content with the content copied from the kube config file in the VM
 
