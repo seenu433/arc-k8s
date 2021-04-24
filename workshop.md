@@ -109,7 +109,7 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 
 cat $HOME/.kube/config
 
-## Copy the contents to be used next
+## Copy the contents to be used next (using mouse right click)
 ```
 
 Exit from the Shell
