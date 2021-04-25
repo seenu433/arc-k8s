@@ -157,7 +157,7 @@ az group create --name arc -l EastUS -o table
 ## Connect the Kubernetes cluster to Azure Arc
 az connectedk8s connect --name arc-k8s --resource-group arc
 
-## Open another Command Prompt window and watch for the rollout of agents
+## Open another Command Prompt window and watch for the rollout of agents. Eventually you should have 8 agents in the azure-arc namespace.
 kubectl get po -A -w
 ```
 
