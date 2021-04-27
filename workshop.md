@@ -264,13 +264,13 @@ az ad sp show --id APP_ID --query objectId -o tsv
 kubectl create clusterrolebinding admin-user-binding --clusterrole cluster-admin --user=<objectId>
 ```
 
-Disable the inbound rule on the cluster NSG by changing the rule to DENY for port 6443
+Disable the inbound rule on the cluster VM (kube-master) NSG by changing the rule to DENY for port 6443
 
 ```
 ## Login using hte service principal
 az login --service-principal --username APP_ID --password PASSWORD --tenant TENANT_ID
 
-## Run the proxcy to initiate connectivity to the Arc resource
+## Run the proxy to initiate connectivity to the Arc resource
 az connectedk8s proxy -n arc-k8s -g arc
 
 ## Open a new CMD window and run kubectl commands
