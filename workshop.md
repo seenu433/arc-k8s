@@ -253,8 +253,8 @@ A Kubernetes Cluster onboarded to Arc will still not have direct access to the A
 - Service Account Token / AAD Auth
 
 ```
-## Create a service principal
-az ad sp create-for-rbac --name arc-k8s-user
+## Create a service principal, this needs to be unique
+az ad sp create-for-rbac --name arc-k8s-user-[YOUR ALIAS]
 ## Make a note of the appId, password and tenant
 
 ## Get the Object Id for the SP
