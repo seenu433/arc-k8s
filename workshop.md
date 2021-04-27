@@ -253,6 +253,9 @@ A Kubernetes Cluster onboarded to Arc will still not have direct access to the A
 - Service Account Token / AAD Auth
 
 ```
+## Enable the Cluster Connect on any Azure Arc enabled Kubernetes cluster by running the following command
+az connectedk8s enable-features --features cluster-connect -n arc-k8s -g arc
+
 ## Create a service principal, this needs to be unique
 az ad sp create-for-rbac --name arc-k8s-user-[YOUR ALIAS]
 ## Make a note of the appId, password and tenant
