@@ -4,13 +4,12 @@
 1. Create a k8s cluster using Kubeadm 
 1. Onboard the cluster to Arc for k8s
 1. Features walkthrough: Policies, GitOps, Monitoring
-1. Private preview extensions: Extensions: OSM, Monitoring, Defender
+1. Preview extensions: Extensions: OSM, Monitoring, Defender
 1. Cluster Connect walkthrough
 
 
 ## Prerequisites
 
-1. Share your github handle to get access to [private preview documentation](https://github.com/Azure/azure-arc-kubernetes-preview)
 1. Create a kubernetes cluster using kubeadm
 1. Setup for remote access
 
