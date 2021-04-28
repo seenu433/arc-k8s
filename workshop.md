@@ -10,8 +10,9 @@
 
 ## Prerequisites
 
-1. Create a kubernetes cluster using kubeadm
-1. Setup for remote access
+1. [Install](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)/[Update](https://docs.microsoft.com/en-us/cli/azure/update-azure-cli) Azcli, Install [kubectl](https://kubernetes.io/docs/tasks/tools/), [Install](https://helm.sh/docs/intro/install/)/[Upgrade](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/) to Helm3
+2. Create a kubernetes cluster using kubeadm
+3. Setup for remote access
 
 ### Creating a kubernetes cluster using kubeadm
 
@@ -20,6 +21,9 @@ Create Resource Group, Virtual network, Subnet and Virtual Machine
 _Note: These commands can be executed in win command prompt_
 
 ```azurecli
+
+az upgrade
+
 ## Create a resource group
 az group create --name k8s --location eastus
     
