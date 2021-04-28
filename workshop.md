@@ -22,8 +22,6 @@ _Note: These commands can be executed in win command prompt_
 
 ```azurecli
 
-az upgrade
-
 ## Create a resource group
 az group create --name k8s --location eastus
     
