@@ -253,6 +253,8 @@ A Kubernetes Cluster onboarded to Arc will still not have direct access to the A
 - Proxies the commands to the cluster
 - Service Account Token / AAD Auth
 
+Given the [known limitation](https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/cluster-connect#known-limitations) of Azure AD entity (our UPN, example: someone@microsoft.com) can't be part of more than 200 groups, we run the Cluster Connect feature using Service Principal. 
+
 ```
 ## Enable the Cluster Connect on any Azure Arc enabled Kubernetes cluster by running the following command
 az connectedk8s enable-features --features cluster-connect -n arc-k8s -g arc
