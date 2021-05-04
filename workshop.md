@@ -190,7 +190,17 @@ Observer the policy pod in _kube-system_ and gatekeeper pods in _gatekeeper-syst
 
 Assign a policy from the policy blade (Serach for _Kubernetes_ and assign the _Kubernetes cluster should not allow privileged containers_)
 
-It takes a while to get the constraints pushed to the cluster. Run _kubectl get constraints_ to observe the policies pushed to the cluster as gatekeeper constraints
+It could take 30 - 60min to get the constraints pushed to the cluster. 
+
+
+```azurecli
+## To observe the policies pushed to the cluster as gatekeeper constraints. This should list set of constraints, if not wait.
+kubectl get constraints
+
+## Describe one of the following constraint. Under Spec:, Enforcement Action should be set to deny, not dryrun. If not move to next exercise, try after an hour
+kubectl describe k8sazurecontainernoprivilege.constraints.gatekeeper.sh/azurepolicy-container-no-privilege-1842c1ecbe6bf4a645ac
+
+```
 
 Test the policy by starting a privileged pod
 
